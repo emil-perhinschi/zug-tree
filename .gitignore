@@ -13,3 +13,5 @@ zug-tree-test-*
 *.o
 *.obj
 *.lst
+*.a
+
