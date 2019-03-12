@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"Emil Nicolaie Perhinschi"
+	],
+	"copyright": "Copyright © 2019, Emil Nicolaie Perhinschi",
+	"description": "tree manipulation library",
+	"license": "proprietary",
+	"name": "zug-tree"
+}
