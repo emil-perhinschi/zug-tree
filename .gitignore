@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/zug-tree
+zug-tree.so
+zug-tree.dylib
+zug-tree.dll
+zug-tree.a
+zug-tree.lib
+zug-tree-test-*
+*.exe
+*.o
+*.obj
+*.lst
