@@ -5,17 +5,14 @@ class NaryNode(DataType)
 
 protected:
     size_t _id;
-    NaryNode[] _children;
+    size_t[] _children;
     DataType _data;
     size_t _parent_id = 0;
+public:
+    NaryTree!(NaryNode, DataType) tree;
 
     size_t id() {
         return this._id;
-    }
-
-    NaryTree!(NaryNode, DataType) tree()
-    {
-        return new NaryTree!(NaryNode, DataType)();
     }
 
     void set_children(size_t[] new_children)
@@ -23,26 +20,26 @@ protected:
         this._children = new_children;
     }
 
-    size_t[] children()
+    NaryNode[] children()
     {
         NaryNode[] children;
-        for (int i = 0; i < this.children.length; i++)
+        for (int i = 0; i < this._children.length; i++)
         {
-            children ~= this.tree.node(this.children[i]);
+            children ~= this.tree.node(this._children[i]);
         }
         return children;
     }
 
     NaryNode add_child(DataType data, NaryNode[] children)
     {
-        auto child = this.tree().create_node(this.id, data, children);
-        this.children.push(child.id);
+        auto child = this.tree.create_node(this.id, data, children);
+        this._children ~= child.id;
         return child;
     }
 
     NaryNode remove_child(size_t child_id)
     {
-        this.tree().remove_node(thild_id);
+        this.tree.remove_node(thild_id);
         this._children.remove(child_id);
     }
 
@@ -55,7 +52,7 @@ protected:
     {
         if (this._parent_id != 0)
         {
-            return this.tree().node(this.parent_id);
+            return this.tree.node(this.parent_id);
         }
         return null;
     }
