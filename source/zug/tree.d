@@ -5,11 +5,24 @@ unittest
     import std.stdio;
 
     auto node = new Nary!(int).NaryNode();
+    node.data(1001);
+
+    auto tree = new Nary!(int).NaryTree();
+    tree.root(node);
+
+    auto new_node = tree.create_node(node.id, 1002);
+
+    writeln(tree.node(1).data);
+    writeln(node.children);
+    writeln(tree.nodes_list);
+    writeln(new_node.tree().nodes_list);
+
 }
 
 template Nary(DataType)
 {
     alias NaryTreeCallback = NaryTree delegate();
+
     class NaryNode
     {
 
@@ -26,10 +39,11 @@ template Nary(DataType)
             return this._id;
         }
 
-        void id(size_t id_value) 
+        void id(size_t id_value)
         {
             this._id = id_value;
         }
+
         void set_children(size_t[] new_children)
         {
             this._children = new_children;
@@ -56,8 +70,9 @@ template Nary(DataType)
         {
             import std.array;
             import std.algorithm;
+
             this.tree().remove_node(child_id);
-            remove( this._children, child_id);
+            remove(this._children, child_id);
         }
 
         void parent(size_t new_parent_id)
@@ -76,7 +91,7 @@ template Nary(DataType)
 
         DataType data()
         {
-            return this.data;
+            return this._data;
         }
 
         void data(DataType new_data)
@@ -108,8 +123,18 @@ template Nary(DataType)
             return this.nodes_list[this.root_id];
         }
 
-        void set_root(NaryNode node)
+        size_t next_node_id()
         {
+            this.last_node_id++;
+            return this.last_node_id;
+        }
+
+        void root(NaryNode node)
+        {
+            if (node.id == 0)
+            {
+                node.id = this.next_node_id;
+            }
             this.root_id = node.id;
             this.nodes_list[node.id] = node;
         }
@@ -127,7 +152,7 @@ template Nary(DataType)
                 }
 
                 node.id(1);
-                this.set_root(node);
+                this.root(node);
                 this.last_node_id = node.id;
             }
             else
@@ -137,6 +162,7 @@ template Nary(DataType)
                 this.last_node_id += 1;
                 this.nodes_list[node.id] = node;
             }
+            node.tree = () => this;
             return node;
         }
 
