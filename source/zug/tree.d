@@ -11,12 +11,18 @@ unittest
     tree.root(node);
 
     auto new_node = tree.create_node(node.id, 1002);
-
+    auto another = tree.create_node(0, 1003);
+    writeln("another ", another.id, another.data);
     writeln(tree.node(1).data);
     writeln(node.children);
     writeln(tree.nodes_list);
     writeln(new_node.tree().nodes_list);
 
+    for(int i = 0; i < 10; i++) {
+        another.add_child(10234 + i);
+    }
+
+    writeln("another children", another.children);
 }
 
 template Nary(DataType)
@@ -59,7 +65,7 @@ template Nary(DataType)
             return children;
         }
 
-        NaryNode add_child(DataType data, NaryNode[] children)
+        NaryNode add_child(DataType data)
         {
             auto child = this.tree().create_node(this.id, data);
             this._children ~= child.id;
