@@ -42,6 +42,20 @@ unittest
     assert(second_node_above_root.id == 3);
     assert(second_node_above_root.data == "this is the second child of the root");
     assert(tree.nodes_list.length == 4);
+
+    second_node_above_root.add_child("second level first child");
+    second_node_above_root.add_child("second level second child");
+    second_node_above_root.add_child("second level third child");
+
+    assert(tree.nodes_list.length == 7);
+
+    auto path = second_node_above_root.path();
+    assert(path == [1, 3]);
+
+    auto path_to_third_level = second_node_above_root.child(0).path;
+    assert(path_to_third_level == [1,3,5]);
+    auto test_path_is_right = path ~ second_node_above_root.child(0).id;
+    assert(test_path_is_right == path_to_third_level);
 }
 
 template Nary(DataType)
@@ -133,11 +147,14 @@ template Nary(DataType)
         {
             import std.stdio;
 
-            size_t[] result;
-            writeln("QQQQQQQQQQQQQQ ", this.parent);
-
-            // result ~= this.id;
-            return result;
+            if (this.parent is null) {
+                return [ this.id ];
+            }
+            else {
+                auto result = this.parent.path();
+                result ~= this.id;
+                return result;
+            }
         }
 
     }
