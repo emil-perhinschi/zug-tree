@@ -12,17 +12,36 @@ unittest
 
     auto new_node = tree.create_node(node.id, 1002);
     auto another = tree.create_node(0, 1003);
-    writeln("another ", another.id, another.data);
-    writeln(tree.node(1).data);
-    writeln(node.children);
-    writeln(tree.nodes_list);
-    writeln(new_node.tree().nodes_list);
+
+    // writeln(tree.node(1).data);
+    // writeln(node.children);
+    // writeln(tree.nodes_list);
+    // writeln(new_node.tree().nodes_list);
 
     for(int i = 0; i < 10; i++) {
         another.add_child(10234 + i);
     }
+    assert(another.children.length == 10);
+}
 
-    writeln("another children", another.children);
+unittest
+{
+    import std.stdio;
+
+    auto tree = new Nary!(string).NaryTree();
+    auto root = tree.create_node(0, "this is root");
+    root.add_child("this is the first child");
+    assert(tree.nodes_list.length == 2);
+    root.add_child("this is the second child of the root");
+    root.add_child("this is the third child of the root");
+    auto first_node_above_root = root.child(0);
+    assert(first_node_above_root.id == 2);
+    assert(first_node_above_root.data == "this is the first child");
+
+    auto second_node_above_root = root.child(1);
+    assert(second_node_above_root.id == 3);
+    assert(second_node_above_root.data == "this is the second child of the root");
+    assert(tree.nodes_list.length == 4);
 }
 
 template Nary(DataType)
@@ -50,7 +69,7 @@ template Nary(DataType)
             this._id = id_value;
         }
 
-        void set_children(size_t[] new_children)
+        void children(size_t[] new_children)
         {
             this._children = new_children;
         }
@@ -63,6 +82,11 @@ template Nary(DataType)
                 children ~= this.tree().node(this._children[i]);
             }
             return children;
+        }
+
+        NaryNode child(size_t index)
+        {
+            return this.tree().node(this._children[index]);
         }
 
         NaryNode add_child(DataType data)
@@ -105,9 +129,15 @@ template Nary(DataType)
             this._data = new_data;
         }
 
-        size_t[] path(size_t delegate() path_segment)
+        size_t[] path()
         {
-            return [1];
+            import std.stdio;
+
+            size_t[] result;
+            writeln("QQQQQQQQQQQQQQ ", this.parent);
+
+            // result ~= this.id;
+            return result;
         }
 
     }
