@@ -56,11 +56,28 @@ unittest
     assert(path_to_third_level == [1,3,5]);
     auto test_path_is_right = path ~ second_node_above_root.child(0).id;
     assert(test_path_is_right == path_to_third_level);
+    auto path_string = second_node_above_root.child(0).path_to_string();
+    writeln(path_string);
 }
+
+
 
 template Nary(DataType)
 {
+
+    string path_to_string( NaryNode node )
+    {
+        import std.conv: to;
+        string result;
+        foreach (size_t item; node.path) {
+            auto this_node = node.tree().node(item);
+            result ~= this_node.data().to!string;
+        }
+        return result;
+    }
+
     alias NaryTreeCallback = NaryTree delegate();
+
 
     class NaryNode
     {
