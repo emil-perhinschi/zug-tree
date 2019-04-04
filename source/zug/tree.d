@@ -56,25 +56,30 @@ unittest
     assert(path_to_third_level == [1,3,5]);
     auto test_path_is_right = path ~ second_node_above_root.child(0).id;
     assert(test_path_is_right == path_to_third_level);
-    auto path_string = second_node_above_root.child(0).path_to_string();
-    writeln(path_string);
+    auto last_child = second_node_above_root.child(0);
+    auto path_string = last_child.path_to_string();
 }
 
+// let's simulate a web site 
+unittest
+{
+    import std.stdio;
+    auto tree = new Nary!(string).NaryTree();
+    auto root = tree.create_node(0, "www.example.com");
+    auto products = root.add_child("products");
+    auto demos = root.add_child("demos");
+    auto subscriptions = root.add_child("subscriptions");
+    auto plans = root.add_child("plans");
+    auto search = root.add_child("search");
+    auto books = products.add_child("books");
+    auto ebooks = products.add("ebooks");
+    auto articles = products.add("articles");
+}
 
 
 template Nary(DataType)
 {
 
-    string path_to_string( NaryNode node )
-    {
-        import std.conv: to;
-        string result;
-        foreach (size_t item; node.path) {
-            auto this_node = node.tree().node(item);
-            result ~= this_node.data().to!string;
-        }
-        return result;
-    }
 
     alias NaryTreeCallback = NaryTree delegate();
 
@@ -127,6 +132,8 @@ template Nary(DataType)
             return child;
         }
 
+        alias add = add_child;
+
         void remove_child(size_t child_id)
         {
             import std.array;
@@ -172,6 +179,17 @@ template Nary(DataType)
                 result ~= this.id;
                 return result;
             }
+        }
+
+        string path_to_string()
+        {
+            import std.conv: to;
+            string result;
+            foreach (size_t item; this.path) {
+                auto this_node = this.tree().node(item);
+                result ~= "/" ~ this_node.data().to!string;
+            }
+            return result;
         }
 
     }
