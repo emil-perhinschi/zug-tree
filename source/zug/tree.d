@@ -57,7 +57,8 @@ unittest
     auto test_path_is_right = path ~ second_node_above_root.child(0).id;
     assert(test_path_is_right == path_to_third_level);
     auto last_child = second_node_above_root.child(0);
-    auto path_string = last_child.path_to_string();
+    auto path_string = last_child.path_to_string(" # ");
+    assert("this is root # this is the second child of the root # second level first child" == path_string);
 }
 
 // let's simulate a web site 
@@ -66,14 +67,26 @@ unittest
     import std.stdio;
     auto tree = new Nary!(string).NaryTree();
     auto root = tree.create_node(0, "www.example.com");
+
     auto products = root.add_child("products");
     auto demos = root.add_child("demos");
     auto subscriptions = root.add_child("subscriptions");
     auto plans = root.add_child("plans");
     auto search = root.add_child("search");
+
     auto books = products.add_child("books");
     auto ebooks = products.add("ebooks");
     auto articles = products.add("articles");
+    auto software = products.add("software");
+
+    auto linux = software.add("Linux");
+    auto emacs = software.add("Emacs");
+    auto vim   = software.add("Vim");
+    
+    auto mint  = linux.add("Mint");
+    auto devuan = linux.add("Devuan");
+
+    assert("www.example.com/products/software/Linux/Devuan" == devuan.path_to_string("/"));
 }
 
 
@@ -181,13 +194,15 @@ template Nary(DataType)
             }
         }
 
-        string path_to_string()
+        string path_to_string(string separator)
         {
             import std.conv: to;
             string result;
             foreach (size_t item; this.path) {
-                auto this_node = this.tree().node(item);
-                result ~= "/" ~ this_node.data().to!string;
+                auto current_node = this.tree().node(item);
+                result ~= 
+                    ( current_node.parent is null ? "" : separator ) 
+                    ~ current_node.data().to!string;
             }
             return result;
         }
